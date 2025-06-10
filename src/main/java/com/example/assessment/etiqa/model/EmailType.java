@@ -3,7 +3,8 @@ package com.example.assessment.etiqa.model;
 public enum EmailType {
     OFFICE(true),
     PERSONAL(true),
-    BACKUP(true);
+    BACKUP(true),
+    DIU(true);
 
     private final boolean required;
 
