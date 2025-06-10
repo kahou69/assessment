@@ -2,9 +2,7 @@ package com.example.assessment.etiqa.model;
 
 public enum EmailType {
     OFFICE(true),
-    PERSONAL(true),
-    BACKUP(true),
-    DIU(true);
+    PERSONAL(true);
 
     private final boolean required;
 
