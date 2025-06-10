@@ -1,0 +1,7 @@
+package com.example.assessment.etiqa.exception;
+
+public class CustomerNotFoundException extends RuntimeException{
+    public CustomerNotFoundException(String message) {
+        super(message);
+    }
+}

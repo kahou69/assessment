@@ -1,0 +1,29 @@
+# IDEs
+.idea/
+*.iml
+
+# Build
+/target/
+/build/
+/out/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven/Gradle
+.gradle/
+.classpath
+.project
+.settings/
+
+# Spring Boot
+application.properties
+application.yml
+
+# Swagger generated files
+swagger-ui.html
+/v3/api-docs/
