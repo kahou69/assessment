@@ -6,6 +6,7 @@ import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
 import com.example.assessment.etiqa.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -72,16 +73,18 @@ public class CustomerService {
     public Customer updateCustomer(Long id, Customer customer) {
         Customer existing = getCustomerById(id);
 
-        existing.setFirstName(customer.getFirstName());
-        existing.setLastName(customer.getLastName());
-        existing.setEmails(customer.getEmails());
-        existing.setFamilyMembers(customer.getFamilyMembers());
+//        existing.setFirstName(customer.getFirstName());
+//        existing.setLastName(customer.getLastName());
+//        existing.setEmails(customer.getEmails());
+//        existing.setFamilyMembers(customer.getFamilyMembers());
+
+        BeanUtils.copyProperties(customer, existing, "id");
 
         return custRepo.save(existing);
     }
 
     public void deleteCustomer(Long id) {
-        custRepo.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found with id : " + id));
+        getCustomerById(id);
         custRepo.deleteById(id);
     }
 }

@@ -23,7 +23,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(CustomerNotFoundException ex) {
+    public ResponseEntity<String> handleCustomerNotFoundException(CustomerNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
