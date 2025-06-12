@@ -39,35 +39,27 @@ public class CustomerControllerTest {
         List<Customer> mockList = List.of(
                 new Customer(1L, "Alice", "Smith",
                         Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com")),
-                new Customer(2L, "Bob", "Builder",
-                        Map.of(EmailType.PERSONAL, "bob@gmail.com"),
-                        List.of("alice@domain.com"))
+                        List.of("bob@domain.com", "boba@gmail.com"))
         );
 
         when(customerService.getAllCustomers()).thenReturn(mockList);
 
         mockMvc.perform(get("/api/customers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[1].firstName").value("Bob"));
+                .andExpect(jsonPath("$[0].firstName").value("Alice"));
     }
 
     @Test
     void testGetCustomerById() throws Exception {
-        List<Customer> mockList = List.of(
-                new Customer(1L, "Alice", "Smith",
+     Customer mockCustomer = new Customer(1L, "Alice", "Smith",
                         Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com")),
-                new Customer(2L, "Bob", "Builder",
-                        Map.of(EmailType.PERSONAL, "bob@gmail.com"),
-                        List.of("alice@domain.com"))
-        );
+                        List.of("bob@domain.com", "boba@gmail.com"));
 
-        when(customerService.getCustomerById(2L)).thenReturn(mockList.get(1));
+        when(customerService.getCustomerById(2L)).thenReturn(mockCustomer);
 
         mockMvc.perform(get("/api/customers/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName").value("Builder"));
+                .andExpect(jsonPath("$.lastName").value("Smith"));
     }
 
     @Test

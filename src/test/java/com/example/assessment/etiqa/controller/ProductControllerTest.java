@@ -35,16 +35,14 @@ public class ProductControllerTest {
     @Test
     void TestGetAllProducts() throws Exception {
         List<Product> mockList = List.of(
-                new Product(1L, "World Of Warcraft", new BigDecimal("49.90"), 10),
-                new Product(2L, "Prisoner of Azkaban", new BigDecimal("49.9"), 5),
-                new Product(3L, "Lord of The Rings", new BigDecimal("49.9"), 3)
+                new Product(1L, "Lord of The Rings", new BigDecimal("49.9"), 3)
         );
 
         when(productService.getAllProducts()).thenReturn(mockList);
 
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[2].bookTitle").value("Lord of The Rings"));
+                .andExpect(jsonPath("$[0].bookTitle").value("Lord of The Rings"));
     }
 
     @Test
