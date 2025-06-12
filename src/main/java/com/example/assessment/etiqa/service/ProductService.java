@@ -38,4 +38,16 @@ public class ProductService {
         getProductById(id);
          productRepository.deleteById(id);
     }
+
+    public Product restockProduct(Long id , Integer quantity) {
+
+        //check restock quantity is bigger than 0 or not
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Restock quantity should be greater than 0");
+        }
+
+        Product product = getProductById(id);
+        product.setBookQuantity(product.getBookQuantity() + quantity);
+        return productRepository.save(product);
+    }
 }

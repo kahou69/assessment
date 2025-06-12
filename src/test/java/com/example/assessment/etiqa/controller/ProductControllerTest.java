@@ -35,16 +35,14 @@ public class ProductControllerTest {
     @Test
     void TestGetAllProducts() throws Exception {
         List<Product> mockList = List.of(
-                new Product(1L, "World Of Warcraft", new BigDecimal("49.90"), 10),
-                new Product(2L, "Prisoner of Azkaban", new BigDecimal("49.9"), 5),
-                new Product(3L, "Lord of The Rings", new BigDecimal("49.9"), 3)
+                new Product(1L, "Lord of The Rings", new BigDecimal("49.9"), 3)
         );
 
         when(productService.getAllProducts()).thenReturn(mockList);
 
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[2].bookTitle").value("Lord of The Rings"));
+                .andExpect(jsonPath("$[0].bookTitle").value("Lord of The Rings"));
     }
 
     @Test
@@ -84,6 +82,24 @@ public class ProductControllerTest {
                         .content(objectMapper.writeValueAsString(update)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookTitle").value("Refactoring"));
+    }
+
+    @Test
+    void restockProduct() throws Exception {
+        int originalQty = 3;
+        int restockQty = 7;
+        int newQty = originalQty + restockQty;
+
+        Product existing = new Product(3L, "Refactoring", new BigDecimal("39.99"), originalQty);
+        Product updated = new Product(3L, "Refactoring", new BigDecimal("39.99"), newQty);
+
+        when(productService.restockProduct(eq(3L), eq(restockQty))).thenReturn(updated);
+
+        mockMvc.perform(put("/api/products/3/restock")
+                .param("quantity", String.valueOf(restockQty))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookQuantity").value(newQty));
     }
 
     @Test
