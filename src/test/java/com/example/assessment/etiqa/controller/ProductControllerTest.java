@@ -85,6 +85,24 @@ public class ProductControllerTest {
     }
 
     @Test
+    void restockProduct() throws Exception {
+        int originalQty = 3;
+        int restockQty = 7;
+        int newQty = originalQty + restockQty;
+
+        Product existing = new Product(3L, "Refactoring", new BigDecimal("39.99"), originalQty);
+        Product updated = new Product(3L, "Refactoring", new BigDecimal("39.99"), newQty);
+
+        when(productService.restockProduct(eq(3L), eq(restockQty))).thenReturn(updated);
+
+        mockMvc.perform(put("/api/products/3/restock")
+                .param("quantity", String.valueOf(restockQty))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookQuantity").value(newQty));
+    }
+
+    @Test
     void testDeleteProduct() throws Exception {
         mockMvc.perform(delete("/api/products/3"))
                 .andExpect(status().isNoContent());

@@ -46,4 +46,10 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Restock quantity by id")
+    @PutMapping("/{id}/restock")
+    public ResponseEntity<Product> restockProduct(@PathVariable Long id, @RequestParam Integer quantity) {
+        return ResponseEntity.ok(productService.restockProduct(id, quantity));
+    }
+
 }
