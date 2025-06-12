@@ -1,7 +1,7 @@
 package com.example.assessment.etiqa.service;
 
 import com.example.assessment.etiqa.exception.InvalidEmailException;
-import com.example.assessment.etiqa.exception.CustomerNotFoundException;
+import com.example.assessment.etiqa.exception.NotFoundException;
 import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
 import com.example.assessment.etiqa.repository.CustomerRepository;
@@ -67,7 +67,7 @@ public class CustomerService {
     }
 
     public Customer getCustomerById(Long id) {
-        return custRepo.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer Not found with id : " + id));
+        return custRepo.findById(id).orElseThrow(() -> new NotFoundException("Customer Not found with id : " + id));
     }
 
     public Customer updateCustomer(Long id, Customer customer) {

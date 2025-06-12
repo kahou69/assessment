@@ -1,6 +1,6 @@
 package com.example.assessment.etiqa.service;
 
-import com.example.assessment.etiqa.exception.ProductNotFoundException;
+import com.example.assessment.etiqa.exception.NotFoundException;
 import com.example.assessment.etiqa.model.Product;
 import com.example.assessment.etiqa.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class ProductService {
 
     public Product getProductById(Long id){
         return productRepository.findById(id)
-                .orElseThrow(() ->  new ProductNotFoundException("Product not found with id : " + id));
+                .orElseThrow(() ->  new NotFoundException("Product not found with id : " + id));
     }
 
     public Product updateProduct(Long id, Product updatedProduct) {
