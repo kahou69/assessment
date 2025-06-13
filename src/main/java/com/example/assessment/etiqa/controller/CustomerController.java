@@ -1,5 +1,6 @@
 package com.example.assessment.etiqa.controller;
 
+import com.example.assessment.etiqa.dto.CustomerDTO;
 import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +31,8 @@ public class CustomerController {
 
     @Operation(summary = "create a new customer")
     @PostMapping
-    public ResponseEntity<Customer> saveCustomer (@RequestBody Customer customer) {
-        return ResponseEntity.ok(customerService.saveCustomer(customer));
+    public ResponseEntity<CustomerDTO> saveCustomer (@RequestBody CustomerDTO customerDTO) {
+        return ResponseEntity.ok(customerService.saveCustomer(customerDTO));
     }
 
     @Operation(summary = "Update a single customer by id")

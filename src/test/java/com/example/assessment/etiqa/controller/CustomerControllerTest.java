@@ -39,7 +39,7 @@ public class CustomerControllerTest {
         List<Customer> mockList = List.of(
                 new Customer(1L, "Alice", "Smith",
                         Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com"))
+                        List.of("bob@domain.com", "boba@gmail.com"), null)
         );
 
         when(customerService.getAllCustomers()).thenReturn(mockList);
@@ -53,7 +53,7 @@ public class CustomerControllerTest {
     void testGetCustomerById() throws Exception {
      Customer mockCustomer = new Customer(1L, "Alice", "Smith",
                         Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com"));
+                        List.of("bob@domain.com", "boba@gmail.com"), null);
 
         when(customerService.getCustomerById(2L)).thenReturn(mockCustomer);
 
@@ -66,13 +66,13 @@ public class CustomerControllerTest {
     void testSaveCustomer() throws Exception {
         Customer customer = new Customer(null, "John", "Doe",
                 Map.of(EmailType.OFFICE, "john@office.com"),
-                List.of("family@domain.com"));
+                List.of("family@domain.com"), null);
 
         Customer savedCustomer = new Customer(5L, "John", "Doe",
                 customer.getEmails(),
-                customer.getFamilyMembers());
+                customer.getFamilyMembers(), null);
 
-        when(customerService.saveCustomer(any())).thenReturn(savedCustomer);
+        when(customerService.saveCustomer(any())).thenReturn(customerService.mapToCustomerDTO(savedCustomer));
 
         mockMvc.perform(post("/api/customers")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,10 +85,10 @@ public class CustomerControllerTest {
     void testUpdateCustomer() throws Exception {
         Customer update = new Customer(null, "Updated", "User",
                 Map.of(EmailType.OFFICE, "new@office.com"),
-                List.of("updated@domain.com"));
+                List.of("updated@domain.com"), null);
 
         Customer updated = new Customer(1L, "Updated", "User",
-                update.getEmails(), update.getFamilyMembers());
+                update.getEmails(), update.getFamilyMembers(), null);
 
         when(customerService.updateCustomer(eq(1L), any())).thenReturn(updated);
 
