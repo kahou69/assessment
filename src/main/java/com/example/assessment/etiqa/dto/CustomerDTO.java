@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @Builder
 public class CustomerDTO {
-
+    private Long id;
     private String firstName;
     private String lastName;
     private Map<EmailType, String> emails = new HashMap<>();

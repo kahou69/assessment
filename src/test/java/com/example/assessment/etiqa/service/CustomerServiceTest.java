@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerServiceTest {
 
-    private final CustomerService service = new CustomerService(null);
+    private final CustomerService service = new CustomerService(null, null);
 
     @Test
     void shouldPassWhenOfficeEmailIsPresentAndValid() {
