@@ -1,5 +1,6 @@
 package com.example.assessment.etiqa.service;
 
+import com.example.assessment.etiqa.dto.CustomerDTO;
 import com.example.assessment.etiqa.exception.InvalidEmailException;
 import com.example.assessment.etiqa.exception.NotFoundException;
 import com.example.assessment.etiqa.model.Customer;
@@ -63,9 +64,29 @@ public class CustomerService {
         }
     }
 
-    public Customer saveCustomer(Customer customer) {
-        validateEmails(customer.getEmails());
-        return custRepo.save(customer);
+    public CustomerDTO mapToCustomerDTO (Customer customer) {
+        return CustomerDTO.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .emails(customer.getEmails())
+                .familyMembers(customer.getFamilyMembers())
+                .build();
+    }
+
+    public Customer mapToEntity (CustomerDTO customerDTO) {
+        return Customer.builder()
+                .firstName(customerDTO.getFirstName())
+                .lastName(customerDTO.getLastName())
+                .emails(customerDTO.getEmails())
+                .familyMembers(customerDTO.getFamilyMembers())
+                .build();
+
+    }
+
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
+        validateEmails(customerDTO.getEmails());
+        custRepo.save(mapToEntity(customerDTO));
+        return customerDTO;
     }
 
     public List<Customer> getAllCustomers() {
@@ -98,4 +119,5 @@ public class CustomerService {
         getCustomerById(id);
         custRepo.deleteById(id);
     }
+
 }
