@@ -6,6 +6,7 @@ import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
 import com.example.assessment.etiqa.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerService {
 
     private final CustomerRepository custRepo;
@@ -35,6 +37,7 @@ public class CustomerService {
                         emails.containsKey(type) && StringUtils.hasText(emails.get(type)));
 
         if (!hasRequired) {
+            log.error("At least one email must be provided: OFFICE or PERSONAL.");
             throw new InvalidEmailException("At least one email must be provided: OFFICE or PERSONAL.");
         }
 
@@ -42,16 +45,19 @@ public class CustomerService {
             String email = entry.getValue();
 
             if(!EnumSet.allOf(EmailType.class).contains(entry.getKey())) {
+                log.error("Invalid email type provided : " + entry.getKey());
                 throw new InvalidEmailException("Invalid email type provided : " + entry.getKey());
             }
 
             //checks for empty email fields
             if(!StringUtils.hasText(email)) {
+                log.error(entry.getKey() + " email is empty.");
                 throw new InvalidEmailException(entry.getKey() + " email is empty.");
             }
 
             //checks for invalid email patterns
             if(!EMAIL_PATTERN.matcher(email).matches()) {
+                log.error("Invalid format for " + entry.getKey()+ " email: " + email) ;
                 throw new InvalidEmailException("Invalid format for " + entry.getKey() + " email: " + email);
             }
         }
@@ -67,11 +73,16 @@ public class CustomerService {
     }
 
     public Customer getCustomerById(Long id) {
-        return custRepo.findById(id).orElseThrow(() -> new NotFoundException("Customer Not found with id : " + id));
+        return custRepo.findById(id).orElseThrow(() -> {
+            log.error("Customer not found with id : " + id);
+            return new NotFoundException("Customer Not found with id : " + id);
+        });
     }
 
     public Customer updateCustomer(Long id, Customer customer) {
         Customer existing = getCustomerById(id);
+        validateEmails(customer.getEmails());
+
 
 //        existing.setFirstName(customer.getFirstName());
 //        existing.setLastName(customer.getLastName());

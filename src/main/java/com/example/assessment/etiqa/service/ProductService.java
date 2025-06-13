@@ -4,6 +4,7 @@ import com.example.assessment.etiqa.exception.NotFoundException;
 import com.example.assessment.etiqa.model.Product;
 import com.example.assessment.etiqa.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
    private final ProductRepository productRepository;
@@ -25,7 +27,10 @@ public class ProductService {
 
     public Product getProductById(Long id){
         return productRepository.findById(id)
-                .orElseThrow(() ->  new NotFoundException("Product not found with id : " + id));
+                .orElseThrow(() -> {
+                    log.error("Product not found with ID: {}", id);
+                    return new NotFoundException("Product not found with id : " + id);
+                });
     }
 
     public Product updateProduct(Long id, Product updatedProduct) {
@@ -43,6 +48,7 @@ public class ProductService {
 
         //check restock quantity is bigger than 0 or not
         if (quantity <= 0) {
+            log.error("Restock quantity should be greater than 0");
             throw new IllegalArgumentException("Restock quantity should be greater than 0");
         }
 
