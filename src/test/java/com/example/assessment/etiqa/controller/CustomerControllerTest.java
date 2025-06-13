@@ -1,5 +1,6 @@
 package com.example.assessment.etiqa.controller;
 
+import com.example.assessment.etiqa.dto.CustomerDTO;
 import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
 import com.example.assessment.etiqa.service.CustomerService;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,7 +44,11 @@ public class CustomerControllerTest {
                         List.of("bob@domain.com", "boba@gmail.com"), null)
         );
 
-        when(customerService.getAllCustomers()).thenReturn(mockList);
+        when(customerService.getAllCustomers()).thenReturn(mockList.stream()
+                .map(mock -> {
+                    CustomerDTO customerDTO = customerService.mapToCustomerDTO(mock);
+                    return customerDTO;
+                }).collect(Collectors.toList()));
 
         mockMvc.perform(get("/api/customers"))
                 .andExpect(status().isOk())
@@ -55,7 +61,7 @@ public class CustomerControllerTest {
                         Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
                         List.of("bob@domain.com", "boba@gmail.com"), null);
 
-        when(customerService.getCustomerById(2L)).thenReturn(mockCustomer);
+        when(customerService.getCustomerById(2L)).thenReturn(customerService.mapToCustomerDTO(mockCustomer));
 
         mockMvc.perform(get("/api/customers/2"))
                 .andExpect(status().isOk())
@@ -90,7 +96,7 @@ public class CustomerControllerTest {
         Customer updated = new Customer(1L, "Updated", "User",
                 update.getEmails(), update.getFamilyMembers(), null);
 
-        when(customerService.updateCustomer(eq(1L), any())).thenReturn(updated);
+        when(customerService.updateCustomer(eq(1L), any())).thenReturn(customerService.mapToCustomerDTO(updated));
 
         mockMvc.perform(put("/api/customers/1")
                         .contentType(MediaType.APPLICATION_JSON)

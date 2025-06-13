@@ -1,7 +1,9 @@
 package com.example.assessment.etiqa.service;
 
 import com.example.assessment.etiqa.exception.NotFoundException;
+import com.example.assessment.etiqa.model.OrderItem;
 import com.example.assessment.etiqa.model.Product;
+import com.example.assessment.etiqa.repository.OrderItemRepository;
 import com.example.assessment.etiqa.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProductService {
 
    private final ProductRepository productRepository;
+   private final OrderItemRepository orderItemRepository;
 
     public Product saveProduct(Product product) {
         return productRepository.save(product);
@@ -40,6 +43,10 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
+        List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
+        if (!orderItems.isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete product. It is associated with existing orders.");
+        }
         getProductById(id);
          productRepository.deleteById(id);
     }

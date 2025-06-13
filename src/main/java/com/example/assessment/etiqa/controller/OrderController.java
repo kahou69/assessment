@@ -21,4 +21,10 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> placeOrder(@RequestParam Long customerId, @RequestBody List<OrderItemRequestDTO> orderItems) {
         return ResponseEntity.ok(orderService.placeOrder(customerId, orderItems));
     }
+
+    @Operation(summary = "Find order by customer Id")
+    @GetMapping("/{customerId}")
+    public ResponseEntity<List<OrderResponseDTO>> findOrderByCustomerId(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.findOrderByCustomerId(customerId));
+    }
 }

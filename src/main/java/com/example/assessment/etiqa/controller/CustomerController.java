@@ -19,13 +19,13 @@ public class CustomerController {
 
     @Operation(summary = "Get all Customers")
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
     @Operation(summary = "Get customer by id")
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
@@ -37,7 +37,7 @@ public class CustomerController {
 
     @Operation(summary = "Update a single customer by id")
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id,@RequestBody Customer customer) {
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id,@RequestBody CustomerDTO customer) {
         return ResponseEntity.ok(customerService.updateCustomer(id, customer));
     }
 

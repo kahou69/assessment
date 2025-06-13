@@ -5,18 +5,18 @@ import com.example.assessment.etiqa.exception.InvalidEmailException;
 import com.example.assessment.etiqa.exception.NotFoundException;
 import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
+import com.example.assessment.etiqa.model.Order;
 import com.example.assessment.etiqa.repository.CustomerRepository;
+import com.example.assessment.etiqa.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class CustomerService {
 
     private final CustomerRepository custRepo;
+    private final OrderRepository orderRepo;
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
@@ -66,6 +67,7 @@ public class CustomerService {
 
     public CustomerDTO mapToCustomerDTO (Customer customer) {
         return CustomerDTO.builder()
+                .id(customer.getId())
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastName())
                 .emails(customer.getEmails())
@@ -75,6 +77,7 @@ public class CustomerService {
 
     public Customer mapToEntity (CustomerDTO customerDTO) {
         return Customer.builder()
+                .id(customerDTO.getId())
                 .firstName(customerDTO.getFirstName())
                 .lastName(customerDTO.getLastName())
                 .emails(customerDTO.getEmails())
@@ -85,24 +88,29 @@ public class CustomerService {
 
     public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
         validateEmails(customerDTO.getEmails());
-        custRepo.save(mapToEntity(customerDTO));
-        return customerDTO;
+        Customer customer = custRepo.save(mapToEntity(customerDTO));
+        return mapToCustomerDTO(customer);
     }
 
-    public List<Customer> getAllCustomers() {
-        return custRepo.findAll();
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> cust = custRepo.findAll();
+        List<CustomerDTO> dtos = cust.stream().map(customer -> {
+            return mapToCustomerDTO(customer);
+        }).collect(Collectors.toList());
+        return dtos;
     }
 
-    public Customer getCustomerById(Long id) {
-        return custRepo.findById(id).orElseThrow(() -> {
+    public CustomerDTO getCustomerById(Long id) {
+        Customer customer =  custRepo.findById(id).orElseThrow(() -> {
             log.error("Customer not found with id : " + id);
             return new NotFoundException("Customer Not found with id : " + id);
         });
+        return mapToCustomerDTO(customer);
     }
 
-    public Customer updateCustomer(Long id, Customer customer) {
-        Customer existing = getCustomerById(id);
-        validateEmails(customer.getEmails());
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+        CustomerDTO existing = getCustomerById(id);
+        validateEmails(customerDTO.getEmails());
 
 
 //        existing.setFirstName(customer.getFirstName());
@@ -110,13 +118,21 @@ public class CustomerService {
 //        existing.setEmails(customer.getEmails());
 //        existing.setFamilyMembers(customer.getFamilyMembers());
 
-        BeanUtils.copyProperties(customer, existing, "id");
+        BeanUtils.copyProperties(customerDTO, existing, "id");
 
-        return custRepo.save(existing);
+         Customer customer = custRepo.save(mapToEntity(existing));
+         return mapToCustomerDTO(customer);
     }
 
     public void deleteCustomer(Long id) {
         getCustomerById(id);
+        List<Order> orders = orderRepo.findByCustomerId(id);
+
+        if(!orders.isEmpty()) {
+            log.error("Cannot delete customer. It is associated with existing orders.");
+            throw new IllegalArgumentException("Cannot delete customer. It is associated with existing orders.");
+        }
+
         custRepo.deleteById(id);
     }
 
