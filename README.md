@@ -29,7 +29,7 @@ git clone https://github.com/kahou69/assessment
 
 ## Project Requirements
 
-- **Java 11+**: Ensure that you have JDK 11+ installed on your system.
+- **Java 21(LTS)**: Ensure that you have JDK 21(LTS) installed on your system.
 - **Maven**: Apache Maven for dependency management and build automation.
 
 ## Building the Project
