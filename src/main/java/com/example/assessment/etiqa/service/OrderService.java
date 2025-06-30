@@ -31,7 +31,7 @@ public class OrderService {
 
     public OrderResponseDTO placeOrder(Long customerId, List<OrderItemRequestDTO> orderItemRequestDTOs) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> {
-            log.error("Customer not found with id : " + customerId);
+            log.error("Customer not found with id : {}", customerId);
             return new NotFoundException("Customer not found with id : " + customerId);
         });
 
@@ -102,7 +102,7 @@ public class OrderService {
         return orderItemRequestDTOs.stream().map(dto -> {
             Product product = productRepository.findById(dto.getProductId())
                     .orElseThrow(() -> {
-                        log.error("Product not found with id : " + dto.getProductId());
+                        log.error("Product not found with id : {}", dto.getProductId());
                         return new NotFoundException("Product not found with id : " + dto.getProductId());
                     });
             OrderItem orderItem = new OrderItem();
@@ -116,12 +116,12 @@ public class OrderService {
     private void validateOrderItemsQuantity (List<OrderItem> orderItems) {
         for (OrderItem orderItem : orderItems) {
             if (orderItem.getQuantity() <= 0) {
-                log.error("Quantity for item bought with id " + orderItem.getProduct().getId() + " cannot be less than zero.");
+                log.error("Quantity for item bought with id {} cannot be less than zero.", orderItem.getProduct().getId());
                 throw new IllegalArgumentException("Quantity for item bought with id " + orderItem.getProduct().getId() + " cannot be less than zero.");
             }
 
             if (orderItem.getProduct().getBookQuantity() < orderItem.getQuantity()) {
-                log.error("There are not enough stocks available for this product id : " + orderItem.getProduct().getId());
+                log.error("There are not enough stocks available for this product id : {}", orderItem.getProduct().getId());
                 throw new IllegalArgumentException("There are not enough stocks available for this product id : " + orderItem.getProduct().getId());
             }
         }

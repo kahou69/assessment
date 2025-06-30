@@ -45,6 +45,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
         List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
         if (!orderItems.isEmpty()) {
+            log.error("Cannot Delete Product with ID: {}", id);
             throw new IllegalArgumentException("Cannot delete product. It is associated with existing orders.");
         }
         getProductById(id);

@@ -38,65 +38,64 @@ public class CustomerControllerTest {
 
     @Test
     void testGetAllCustomers() throws Exception {
-        List<Customer> mockList = List.of(
-                new Customer(1L, "Alice", "Smith",
-                        Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com"), null)
-        );
+        // Create mock list of customers
+        List<CustomerDTO> customerDTOList = List.of
+                (new CustomerDTO(1L, "Alice", "Smith",
+                Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
+                List.of("bob@domain.com", "boba@gmail.com")));
 
-        when(customerService.getAllCustomers()).thenReturn(mockList.stream()
-                .map(mock -> {
-                    CustomerDTO customerDTO = customerService.mapToCustomerDTO(mock);
-                    return customerDTO;
-                }).collect(Collectors.toList()));
+        when(customerService.getAllCustomers()).thenReturn(customerDTOList);
 
+        // Perform the test
         mockMvc.perform(get("/api/customers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].firstName").value("Alice"));
+                .andExpect(jsonPath("$[0].firstName").value("Alice"))
+                .andExpect(jsonPath("$[0].lastName").value("Smith"));
     }
 
     @Test
     void testGetCustomerById() throws Exception {
-     Customer mockCustomer = new Customer(1L, "Alice", "Smith",
-                        Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
-                        List.of("bob@domain.com", "boba@gmail.com"), null);
+        CustomerDTO customerDTO = new CustomerDTO(1L, "Alice", "Smith",
+                Map.of(EmailType.OFFICE, "alice@company.com", EmailType.PERSONAL, "alice@gmail.com"),
+                List.of("bob@domain.com", "boba@gmail.com"));
 
-        when(customerService.getCustomerById(2L)).thenReturn(customerService.mapToCustomerDTO(mockCustomer));
+        when(customerService.getCustomerById(1L)).thenReturn(customerDTO);
 
-        mockMvc.perform(get("/api/customers/2"))
+        mockMvc.perform(get("/api/customers/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName").value("Smith"));
     }
 
     @Test
     void testSaveCustomer() throws Exception {
-        Customer customer = new Customer(null, "John", "Doe",
+        CustomerDTO customer = new CustomerDTO(null, "John", "Doe",
                 Map.of(EmailType.OFFICE, "john@office.com"),
-                List.of("family@domain.com"), null);
+                List.of("family@domain.com"));
 
-        Customer savedCustomer = new Customer(5L, "John", "Doe",
+        CustomerDTO savedCustomer = new CustomerDTO(5L, "John", "Doe",
                 customer.getEmails(),
-                customer.getFamilyMembers(), null);
+                customer.getFamilyMembers());
 
-        when(customerService.saveCustomer(any())).thenReturn(customerService.mapToCustomerDTO(savedCustomer));
+        when(customerService.saveCustomer(any())).thenReturn(savedCustomer);
 
         mockMvc.perform(post("/api/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(5));
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.firstName").value("John"));
     }
 
     @Test
     void testUpdateCustomer() throws Exception {
-        Customer update = new Customer(null, "Updated", "User",
+        CustomerDTO update = new CustomerDTO(null, "Updated", "User",
                 Map.of(EmailType.OFFICE, "new@office.com"),
-                List.of("updated@domain.com"), null);
+                List.of("updated@domain.com"));
 
-        Customer updated = new Customer(1L, "Updated", "User",
-                update.getEmails(), update.getFamilyMembers(), null);
+        CustomerDTO updated = new CustomerDTO(1L, "Updated", "User",
+                update.getEmails(), update.getFamilyMembers());
 
-        when(customerService.updateCustomer(eq(1L), any())).thenReturn(customerService.mapToCustomerDTO(updated));
+        when(customerService.updateCustomer(eq(1L), any())).thenReturn(updated);
 
         mockMvc.perform(put("/api/customers/1")
                         .contentType(MediaType.APPLICATION_JSON)
