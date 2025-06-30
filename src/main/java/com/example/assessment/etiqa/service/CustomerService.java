@@ -47,19 +47,19 @@ public class CustomerService {
             String email = entry.getValue();
 
             if(!EnumSet.allOf(EmailType.class).contains(entry.getKey())) {
-                log.error("Invalid email type provided : " + entry.getKey());
+                log.error("Invalid email type provided : {}", entry.getKey());
                 throw new InvalidEmailException("Invalid email type provided : " + entry.getKey());
             }
 
             //checks for empty email fields
             if(!StringUtils.hasText(email)) {
-                log.error(entry.getKey() + " email is empty.");
+                log.error("{} email is empty.", entry.getKey());
                 throw new InvalidEmailException(entry.getKey() + " email is empty.");
             }
 
             //checks for invalid email patterns
             if(!EMAIL_PATTERN.matcher(email).matches()) {
-                log.error("Invalid format for " + entry.getKey()+ " email: " + email) ;
+                log.error("Invalid format for {} email: {}", entry.getKey(), email);
                 throw new InvalidEmailException("Invalid format for " + entry.getKey() + " email: " + email);
             }
         }
@@ -94,15 +94,12 @@ public class CustomerService {
 
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> cust = custRepo.findAll();
-        List<CustomerDTO> dtos = cust.stream().map(customer -> {
-            return mapToCustomerDTO(customer);
-        }).collect(Collectors.toList());
-        return dtos;
+        return cust.stream().map(this::mapToCustomerDTO).collect(Collectors.toList());
     }
 
     public CustomerDTO getCustomerById(Long id) {
         Customer customer =  custRepo.findById(id).orElseThrow(() -> {
-            log.error("Customer not found with id : " + id);
+            log.error("Customer not found with id : {}", id);
             return new NotFoundException("Customer Not found with id : " + id);
         });
         return mapToCustomerDTO(customer);

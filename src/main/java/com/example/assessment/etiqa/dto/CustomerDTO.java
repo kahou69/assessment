@@ -1,6 +1,7 @@
 package com.example.assessment.etiqa.dto;
 
 import com.example.assessment.etiqa.model.EmailType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class CustomerDTO {
     private Long id;
     private String firstName;
