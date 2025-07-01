@@ -24,8 +24,8 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @Autowired
-    CacheInspectionService cacheInspectionService;
+    private final CacheInspectionService cacheInspectionService;
+
 
     @Operation(summary = "Get all Customers")
     @GetMapping
