@@ -15,6 +15,7 @@ import com.example.assessment.etiqa.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +30,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
 
+    @Transactional
     public OrderResponseDTO placeOrder(Long customerId, List<OrderItemRequestDTO> orderItemRequestDTOs) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> {
             log.error("Customer not found with id : {}", customerId);
