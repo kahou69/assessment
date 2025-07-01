@@ -1,6 +1,7 @@
 package com.example.assessment.etiqa.controller;
 
 import com.example.assessment.etiqa.model.Product;
+import com.example.assessment.etiqa.service.CacheInspectionService;
 import com.example.assessment.etiqa.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ public class ProductControllerTest {
 
     @MockBean
     private ProductService productService;
+
+    @MockBean
+    private CacheInspectionService cis;
 
     @Autowired
     private ObjectMapper objectMapper;

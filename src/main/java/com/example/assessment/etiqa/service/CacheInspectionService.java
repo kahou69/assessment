@@ -1,5 +1,8 @@
 package com.example.assessment.etiqa.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -8,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CacheInspectionService {
 
     @Autowired
@@ -15,11 +20,11 @@ public class CacheInspectionService {
 
     public void printCacheContents(String cacheName) {
         Cache cache = cacheManager.getCache(cacheName);
-        if(cache != null) {
-            System.out.println("Cache Contents : ");
-            System.out.println(Objects.requireNonNull(cache.getNativeCache()).toString());
+        if(Objects.nonNull(cache)) {
+            log.info("Cache Contents : " );
+            log.info(Objects.requireNonNull(cache.getNativeCache()).toString());
         } else {
-            System.out.println("Cache not found");
+            log.error("Cache not found");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.assessment.etiqa.controller;
 import com.example.assessment.etiqa.dto.CustomerDTO;
 import com.example.assessment.etiqa.model.Customer;
 import com.example.assessment.etiqa.model.EmailType;
+import com.example.assessment.etiqa.service.CacheInspectionService;
 import com.example.assessment.etiqa.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ public class CustomerControllerTest {
 
     @MockBean
     private CustomerService customerService;
+
+    @MockBean
+    private CacheInspectionService cis;
 
     @Autowired
     private ObjectMapper objectMapper;

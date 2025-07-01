@@ -20,8 +20,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @Autowired
-    CacheInspectionService cacheInspectionService;
+    private final CacheInspectionService cacheInspectionService;
 
     @Operation(summary = "Get all products")
     @GetMapping
